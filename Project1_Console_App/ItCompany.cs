@@ -64,7 +64,6 @@ namespace Project1_Console_App
 
             List<ProjectTeam> teams = loadXML();
 
-
         }
 
         public static List<ProjectTeam> loadXML()
