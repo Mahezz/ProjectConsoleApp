@@ -63,6 +63,17 @@ namespace Project1_Console_App
             #endregion
 
             List<ProjectTeam> teams = loadXML();
+            List<Programmer> programmers = new List<Programmer>()
+            {
+                teams[0].programmers[0], teams[0].programmers[1],
+                teams[1].programmers[0], teams[1].programmers[1]
+            };
+
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("IT COMPANY - REPORT");
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("IT Company is actually composed of " + teams.Count() + " teams, and "
+                + programmers.Count() + " programmers.");
 
         }
 
@@ -73,12 +84,15 @@ namespace Project1_Console_App
             List<Programmer> programmersSecondTeam = new List<Programmer>();
             ProjectTeam team1 = null;
             ProjectTeam team2 = null;
+            Activity activity1 = null;
+            Activity activity2 = null;
             XmlDocument document = new XmlDocument();
 
             try
             {
                 if (File.Exists(xmlFile))
                 {
+                    Console.WriteLine("Document found. Data is loading...");
                     document.Load(xmlFile);
 
                 }
@@ -88,7 +102,8 @@ namespace Project1_Console_App
                     try
                     {
                         createXML();
-                        Console.WriteLine("XML file created with success.");
+                        Console.WriteLine("XML file created with success. Data is loading...");
+                        document.Load(xmlFile);
                     }
                     catch (Exception ef)
                     {
@@ -151,10 +166,41 @@ namespace Project1_Console_App
                                                     {
                                                         salary = Int32.Parse(item5.FirstChild.InnerText);
                                                     }
+                                                    else if (item5.FirstChild.ParentNode.Name.Equals("activity"))
+                                                    {
+                                                        if (item5.FirstChild.HasChildNodes)
+                                                        {
+                                                            string activityname = "";
+                                                            int daystart = 0;
+                                                            int dayfinish = 0;
+                                                            int duration = 0;
+
+                                                            foreach (XmlNode item6 in item5)
+                                                            {
+                                                                if (item6.FirstChild.ParentNode.Name.Equals("activityname"))
+                                                                {
+                                                                    activityname = item6.InnerText;
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("daystart"))
+                                                                {
+                                                                    daystart = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("dayfinish"))
+                                                                {
+                                                                    dayfinish = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("duration"))
+                                                                {
+                                                                    duration = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                            }
+                                                            activity1 = new Activity(activityname, daystart, dayfinish, duration);
+                                                        }
+                                                    }
                                                 }
                                             }
 
-                                            Programmer programmer = new Programmer(firstname, lastname, salary);
+                                            Programmer programmer = new Programmer(firstname, lastname, salary, activity1);
                                             programmersFirstTeam.Add(programmer);
                                             //List
                                         }
@@ -205,10 +251,42 @@ namespace Project1_Console_App
                                                     {
                                                         salary = Int32.Parse(item5.FirstChild.InnerText);
                                                     }
+
+                                                    else if (item5.FirstChild.ParentNode.Name.Equals("activity"))
+                                                    {
+                                                        if (item5.FirstChild.HasChildNodes)
+                                                        {
+                                                            string activityname = "";
+                                                            int daystart = 0;
+                                                            int dayfinish = 0;
+                                                            int duration = 0;
+
+                                                            foreach (XmlNode item6 in item5)
+                                                            {
+                                                                if (item6.FirstChild.ParentNode.Name.Equals("activityname"))
+                                                                {
+                                                                    activityname = item6.InnerText;
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("daystart"))
+                                                                {
+                                                                    daystart = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("dayfinish"))
+                                                                {
+                                                                    dayfinish = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("duration"))
+                                                                {
+                                                                    duration = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                            }
+                                                            activity2 = new Activity(activityname, daystart, dayfinish, duration);
+                                                        }
+                                                    }
                                                 }
                                             }
 
-                                            Programmer programmer = new Programmer(firstname, lastname, salary);
+                                            Programmer programmer = new Programmer(firstname, lastname, salary, activity2);
                                             programmersSecondTeam.Add(programmer);
                                             //List
                                         }
@@ -232,10 +310,13 @@ namespace Project1_Console_App
 
         public static void createXML()
         {
-            Programmer p1 = new Programmer("Angel", "Torres", EMPLOYEE_SALARY);
-            Programmer p2 = new Programmer("Pablo", "Turiel", EMPLOYEE_SALARY);
-            Programmer p3 = new Programmer("Lucas", "Cuestarriba", EMPLOYEE_SALARY);
-            Programmer p4 = new Programmer("Julian", "Rajoz", EMPLOYEE_SALARY);
+            Activity activity1 = new Activity("Activity 1", 1, 10, 9);
+            Activity activity2 = new Activity("Activity 2", 13, 25, 12);
+
+            Programmer p1 = new Programmer("Angel", "Torres", EMPLOYEE_SALARY, activity1);
+            Programmer p2 = new Programmer("Pablo", "Turiel", EMPLOYEE_SALARY, activity1);
+            Programmer p3 = new Programmer("Lucas", "Cuestarriba", EMPLOYEE_SALARY, activity2);
+            Programmer p4 = new Programmer("Julian", "Rajoz", EMPLOYEE_SALARY, activity2);
 
             List<Programmer> team1 = new List<Programmer>(){
                 p1,p2
@@ -290,6 +371,32 @@ namespace Project1_Console_App
             programmer.AppendChild(programmerSalary);
             programmerSalary.AppendChild(textSalary);
 
+            //Activity - Programmer 1
+
+            XmlElement programmerActivity = document.CreateElement(string.Empty, "activity", string.Empty);
+            XmlElement programmerActivityName = document.CreateElement(string.Empty, "activityname", string.Empty);
+            XmlText textActivityName = document.CreateTextNode(pjTeam1.programmers[0].Activity.ActivityName);
+            programmer.AppendChild(programmerActivity);
+            programmerActivity.AppendChild(programmerActivityName);
+            programmerActivityName.AppendChild(textActivityName);
+
+            XmlElement programmerActivityDayS = document.CreateElement(string.Empty, "daystart", string.Empty);
+            XmlText textActivityDayS = document.CreateTextNode(pjTeam1.programmers[0].Activity.DayStart.ToString());
+            programmerActivity.AppendChild(programmerActivityDayS);
+            programmerActivityDayS.AppendChild(textActivityDayS);
+
+            XmlElement programmerActivityDayF = document.CreateElement(string.Empty, "dayfinish", string.Empty);
+            XmlText textActivityDayF = document.CreateTextNode(pjTeam1.programmers[0].Activity.DayFinish.ToString());
+            programmerActivity.AppendChild(programmerActivityDayF);
+            programmerActivityDayF.AppendChild(textActivityDayF);
+
+            XmlElement programmerActivityDuration = document.CreateElement(string.Empty, "duration", string.Empty);
+            XmlText textActivityDuration = document.CreateTextNode(pjTeam1.programmers[0].Activity.Duration.ToString());
+            programmerActivity.AppendChild(programmerActivityDuration);
+            programmerActivityDuration.AppendChild(textActivityDuration);
+
+
+
             XmlElement programmer2 = document.CreateElement(string.Empty, "programmer", string.Empty);
 
             XmlElement programmerFirstName2 = document.CreateElement(string.Empty, "firstname", string.Empty);
@@ -307,6 +414,29 @@ namespace Project1_Console_App
             programmer2.AppendChild(programmerSalary2);
             programmerSalary2.AppendChild(textSalary2);
 
+            //Activity - Programmer 2
+
+            XmlElement programmerActivity2 = document.CreateElement(string.Empty, "activity", string.Empty);
+            XmlElement programmerActivityName2 = document.CreateElement(string.Empty, "activityname", string.Empty);
+            XmlText textActivityName2 = document.CreateTextNode(pjTeam1.programmers[1].Activity.ActivityName);
+            programmer2.AppendChild(programmerActivity2);
+            programmerActivity2.AppendChild(programmerActivityName2);
+            programmerActivityName2.AppendChild(textActivityName2);
+
+            XmlElement programmerActivityDayS2 = document.CreateElement(string.Empty, "daystart", string.Empty);
+            XmlText textActivityDayS2 = document.CreateTextNode(pjTeam1.programmers[1].Activity.DayStart.ToString());
+            programmerActivity2.AppendChild(programmerActivityDayS2);
+            programmerActivityDayS2.AppendChild(textActivityDayS2);
+
+            XmlElement programmerActivityDayF2 = document.CreateElement(string.Empty, "dayfinish", string.Empty);
+            XmlText textActivityDayF2 = document.CreateTextNode(pjTeam1.programmers[1].Activity.DayFinish.ToString());
+            programmerActivity2.AppendChild(programmerActivityDayF2);
+            programmerActivityDayF2.AppendChild(textActivityDayF2);
+
+            XmlElement programmerActivityDuration2 = document.CreateElement(string.Empty, "duration", string.Empty);
+            XmlText textActivityDuration2 = document.CreateTextNode(pjTeam1.programmers[1].Activity.Duration.ToString());
+            programmerActivity2.AppendChild(programmerActivityDuration2);
+            programmerActivityDuration2.AppendChild(textActivityDuration2);
 
             projectTeam.AppendChild(programmers);
             programmers.AppendChild(programmer);
@@ -345,6 +475,30 @@ namespace Project1_Console_App
             programmer3.AppendChild(programmer2Salary);
             programmer2Salary.AppendChild(text2Salary);
 
+            //Activity - Programmer 3
+
+            XmlElement programmerActivity3 = document.CreateElement(string.Empty, "activity", string.Empty);
+            XmlElement programmerActivityName3 = document.CreateElement(string.Empty, "activityname", string.Empty);
+            XmlText textActivityName3 = document.CreateTextNode(pjTeam2.programmers[0].Activity.ActivityName);
+            programmer3.AppendChild(programmerActivity3);
+            programmerActivity3.AppendChild(programmerActivityName3);
+            programmerActivityName3.AppendChild(textActivityName3);
+
+            XmlElement programmerActivityDayS3 = document.CreateElement(string.Empty, "daystart", string.Empty);
+            XmlText textActivityDayS3 = document.CreateTextNode(pjTeam2.programmers[0].Activity.DayStart.ToString());
+            programmerActivity3.AppendChild(programmerActivityDayS3);
+            programmerActivityDayS3.AppendChild(textActivityDayS3);
+
+            XmlElement programmerActivityDayF3 = document.CreateElement(string.Empty, "dayfinish", string.Empty);
+            XmlText textActivityDayF3 = document.CreateTextNode(pjTeam2.programmers[0].Activity.DayFinish.ToString());
+            programmerActivity3.AppendChild(programmerActivityDayF3);
+            programmerActivityDayF3.AppendChild(textActivityDayF3);
+
+            XmlElement programmerActivityDuration3 = document.CreateElement(string.Empty, "duration", string.Empty);
+            XmlText textActivityDuration3 = document.CreateTextNode(pjTeam2.programmers[0].Activity.Duration.ToString());
+            programmerActivity3.AppendChild(programmerActivityDuration3);
+            programmerActivityDuration3.AppendChild(textActivityDuration3);
+
             XmlElement programmer4 = document.CreateElement(string.Empty, "programmer", string.Empty);
 
             XmlElement programmer4FirstName = document.CreateElement(string.Empty, "firstname", string.Empty);
@@ -361,6 +515,30 @@ namespace Project1_Console_App
             XmlText text4Salary2 = document.CreateTextNode(pjTeam2.programmers[1].Salary.ToString());
             programmer4.AppendChild(programmer4Salary2);
             programmer4Salary2.AppendChild(text4Salary2);
+
+            //Activity - Programmer 4
+
+            XmlElement programmerActivity4 = document.CreateElement(string.Empty, "activity", string.Empty);
+            XmlElement programmerActivityName4 = document.CreateElement(string.Empty, "activityname", string.Empty);
+            XmlText textActivityName4 = document.CreateTextNode(pjTeam2.programmers[1].Activity.ActivityName);
+            programmer4.AppendChild(programmerActivity4);
+            programmerActivity4.AppendChild(programmerActivityName4);
+            programmerActivityName4.AppendChild(textActivityName4);
+
+            XmlElement programmerActivityDayS4 = document.CreateElement(string.Empty, "daystart", string.Empty);
+            XmlText textActivityDayS4 = document.CreateTextNode(pjTeam2.programmers[1].Activity.DayStart.ToString());
+            programmerActivity4.AppendChild(programmerActivityDayS4);
+            programmerActivityDayS4.AppendChild(textActivityDayS4);
+
+            XmlElement programmerActivityDayF4 = document.CreateElement(string.Empty, "dayfinish", string.Empty);
+            XmlText textActivityDayF4 = document.CreateTextNode(pjTeam2.programmers[1].Activity.DayFinish.ToString());
+            programmerActivity4.AppendChild(programmerActivityDayF4);
+            programmerActivityDayF4.AppendChild(textActivityDayF4);
+
+            XmlElement programmerActivityDuration4 = document.CreateElement(string.Empty, "duration", string.Empty);
+            XmlText textActivityDuration4 = document.CreateTextNode(pjTeam2.programmers[1].Activity.Duration.ToString());
+            programmerActivity4.AppendChild(programmerActivityDuration4);
+            programmerActivityDuration4.AppendChild(textActivityDuration4);
 
 
             projectTeam2.AppendChild(programmers2);

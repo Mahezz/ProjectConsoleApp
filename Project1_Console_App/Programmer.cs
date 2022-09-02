@@ -11,12 +11,14 @@ namespace Project1_Console_App
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Salary { get; set; }
+        public Activity Activity { get; set; }
 
-        public Programmer(string firstName, string lastName, int salary)
+        public Programmer(string firstName, string lastName, int salary, Activity activity)
         {
             FirstName = firstName;
             LastName = lastName;
             Salary = salary;
+            Activity = activity;
         }
 
         public override string ToString()
@@ -24,6 +26,10 @@ namespace Project1_Console_App
             return LastName + ", " + FirstName + ", " + "salary = " + Salary + "$.";
         }
 
+        public void salaryCalculation()
+        {
+            
+        }
     }
 
 
