@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -67,6 +68,7 @@ namespace Project1_Console_App
             {
                 if (item.HasChildNodes)
                 {
+                    //For each team in root "teams"
                     foreach (XmlNode item2 in item.ChildNodes)
                     {
                         teamCount++;
@@ -74,6 +76,7 @@ namespace Project1_Console_App
                         {
                             team1 = new ProjectTeam();
 
+                            //For each attribute in ParentNode "team"
                             foreach (XmlNode item3 in item2.ChildNodes)
                             {
                                 if (item3.FirstChild.ParentNode.Name.Equals("number"))
@@ -93,10 +96,12 @@ namespace Project1_Console_App
                                         string lastname = "";
                                         int salary = 0;
 
+                                        //For each programmer in ParentNode "programmers"
                                         foreach (XmlNode item4 in item3.ChildNodes)
                                         {
                                             if (item4.HasChildNodes)
                                             {
+                                                //For each attribute in ParentNode "programmer"
                                                 foreach (XmlNode item5 in item4.ChildNodes)
                                                 {
                                                     if (item5.FirstChild.ParentNode.Name.Equals("firstname"))
@@ -121,6 +126,7 @@ namespace Project1_Console_App
                                                             int workedDays = 0;
                                                             int duration = 0;
 
+                                                            //For each attribute in ParentNode "activity"
                                                             foreach (XmlNode item6 in item5)
                                                             {
                                                                 if (item6.FirstChild.ParentNode.Name.Equals("activityname"))
@@ -144,15 +150,17 @@ namespace Project1_Console_App
                                                                     duration = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
                                                             }
+
+                                                            //Creating the activity of a programmer of Team number 1
                                                             activity1 = new Activity(activityName, dayStart, dayFinish, workedDays, duration);
                                                         }
                                                     }
                                                 }
                                             }
-
+                                            //Creating a programmer of Team number 1
                                             Programmer programmer = new Programmer(firstname, lastname, salary, activity1);
+                                            //Adding each programmer created in Team number 1
                                             programmersFirstTeam.Add(programmer);
-                                            //List
                                         }
                                     }
                                 }
@@ -164,6 +172,7 @@ namespace Project1_Console_App
                         {
                             team2 = new ProjectTeam();
 
+                            //For each attribute in ParentNode "team"
                             foreach (XmlNode item3 in item2.ChildNodes)
                             {
                                 if (item3.FirstChild.ParentNode.Name.Equals("number"))
@@ -183,10 +192,12 @@ namespace Project1_Console_App
                                         string lastname = "";
                                         int salary = 0;
 
+                                        //For each programmer in ParentNode "programmers"
                                         foreach (XmlNode item4 in item3.ChildNodes)
                                         {
                                             if (item4.HasChildNodes)
                                             {
+                                                //For each attribute in ParentNode "programmer"
                                                 foreach (XmlNode item5 in item4.ChildNodes)
                                                 {
                                                     if (item5.FirstChild.ParentNode.Name.Equals("firstname"))
@@ -212,6 +223,7 @@ namespace Project1_Console_App
                                                             int workeddays = 0;
                                                             int duration = 0;
 
+                                                            //For each attribute in ParentNode "activity"
                                                             foreach (XmlNode item6 in item5)
                                                             {
                                                                 if (item6.FirstChild.ParentNode.Name.Equals("activityname"))
@@ -235,15 +247,18 @@ namespace Project1_Console_App
                                                                     duration = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
                                                             }
+
+                                                            //Creating the activity of a programmer of Team number 1
                                                             activity2 = new Activity(activityname, daystart, dayfinish, workeddays, duration);
                                                         }
                                                     }
                                                 }
                                             }
 
+                                            //Creating a programmer of Team number 2
                                             Programmer programmer = new Programmer(firstname, lastname, salary, activity2);
+                                            //Adding each programmer created in Team number 2
                                             programmersSecondTeam.Add(programmer);
-                                            //List
                                         }
                                     }
                                 }
@@ -587,7 +602,6 @@ namespace Project1_Console_App
 
             foreach (ProjectTeam team in teams)
             {
-
                 Console.WriteLine("Project team: " + team.TeamNumber);
 
                 foreach (Programmer programmer in team.programmers)
