@@ -594,7 +594,7 @@ namespace Project1_Console_App
             Console.WriteLine("-----------------------------------------------------------------");
             Console.WriteLine("IT Company is actually composed of " + teams.Count() + " teams, and "
                 + programmers.Count() + " programmers.");
-            Console.WriteLine("This month, " + daysConsummed + " days have been" +
+            Console.WriteLine("This month, " + daysConsummed + " days have been " +
                 "consumed by " + programmers.Count + " programmers, and " + remainingDays + " days still in charge.");
             Console.WriteLine("-----------------------------------------------------------------------------------");
             Console.WriteLine("Project teams details");
