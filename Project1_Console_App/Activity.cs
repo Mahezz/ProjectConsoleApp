@@ -11,13 +11,15 @@ namespace Project1_Console_App
         public string ActivityName { get; set; }
         public int DayStart { get; set; }
         public int DayFinish { get; set; }
+        public int WorkedDays { get; set; }
         public int Duration { get; set; }
 
-        public Activity(string activityName, int dayStart, int dayFinish, int duration)
+        public Activity(string activityName, int dayStart, int dayFinish, int workedDays, int duration)
         {
             ActivityName = activityName;
             DayStart = dayStart;
             DayFinish = dayFinish;
+            WorkedDays = workedDays;
             Duration = duration;
         }
     }

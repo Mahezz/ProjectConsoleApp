@@ -20,32 +20,35 @@ namespace Project1_Console_App
             this.programmers = programmers;
         }
 
+        public ProjectTeam(string type, int teamNumber)
+        {
+            Type = type;
+            TeamNumber = teamNumber;
+        }
+
         public ProjectTeam()
         {
         }
 
-        public override string ToString()
-        {
-            int teamSalary;
 
-            if (Type.Equals("Full"))
+        //In this class is where we calculate the salary of the programmers as here is where the
+        //"type" attribute is identified. Teams with "type" = "half" -> 50% = totalSalary/2
+        public int SalaryCalculation(string type)
+        {
+            const int EMPLOYEE_SALARY_PER_DAY = 145;
+            int salary = 0;
+
+            if (type.Equals("Half"))
             {
-                teamSalary = programmers.FirstOrDefault().Salary;
-                return "This is team number " + TeamNumber + ", our type is = " + Type + ", and we earn = " + teamSalary + ". Our team is made up" +
-                    "by " + programmers.Count() + " programmers";
+                salary = EMPLOYEE_SALARY_PER_DAY/2;
             }
-            else if (Type.Equals("Half"))
+            else if(type.Equals("Full"))
             {
-                teamSalary = programmers.FirstOrDefault().Salary / 2;
-                return "This is team number " + TeamNumber + ", our type is = " + Type + ", and we earn = " + teamSalary + ". Our team is made up" +
-                    "by " + programmers.Count() + " programmers";
+                salary = EMPLOYEE_SALARY_PER_DAY;
             }
-            else
-            {
-                teamSalary = programmers.FirstOrDefault().Salary;
-                return "This is team number " + TeamNumber + ", our type is = " + Type + ", and we earn = " + teamSalary + ". Our team is made up" +
-                    "by " + programmers.Count() + " programmers";
-            }
+
+            return salary;
         }
+
     }
 }

@@ -10,74 +10,19 @@ namespace Project1_Console_App
 {
     internal class ItCompany
     {
-        private const int EMPLOYEE_SALARY = 1200;
-        const string xmlFile = "./data.xml";
+        private const string xmlFile = "./data.xml";
 
         static void Main(string[] args)
         {
-            #region first
-            //Programmer p1 = new Programmer("Angel", "Torres", EMPLOYEE_SALARY, pjTeam1);
-            //Programmer p2 = new Programmer("Pablo", "Turiel", EMPLOYEE_SALARY, pjTeam1);
-            //Programmer p3 = new Programmer("Lucas", "Cuestarriba", EMPLOYEE_SALARY, pjTeam2);
-            //Programmer p4 = new Programmer("Julian", "Rajoz", EMPLOYEE_SALARY, pjTeam2);
-
-            //Programmer p1 = new Programmer("Angel", "Torres", EMPLOYEE_SALARY);
-            //Programmer p2 = new Programmer("Pablo", "Turiel", EMPLOYEE_SALARY);
-            //Programmer p3 = new Programmer("Lucas", "Cuestarriba", EMPLOYEE_SALARY);
-            //Programmer p4 = new Programmer("Julian", "Rajoz", EMPLOYEE_SALARY);
-
-            //List<Programmer> team1 = new List<Programmer>(){
-            //    p1,p2
-            //};
-            //List<Programmer> team2 = new List<Programmer>(){
-            //    p3,p4
-            //};
-
-
-            //List<Programmer> programmers = new List<Programmer>()
-            //{
-            //    p1,p2,p3,p4
-            //};
-
-
-
-            //ProjectTeam pjTeam1 = new ProjectTeam("Full", 1, team1);
-            //ProjectTeam pjTeam2 = new ProjectTeam("Half", 2, team2);
-
-
-            //List<ProjectTeam> teams = new List<ProjectTeam>()
-            //{
-            //    pjTeam1,pjTeam2
-            //};
-
-
-            //Console.WriteLine("IT COMPANY - REPORT");
-            //Console.WriteLine("-----------------------------------------------------------------");
-            //Console.WriteLine("IT Company is actually composed of " + teams.Count() + " teams, and "
-            //    + programmers.Count() + " programmers.");
-
-            //for (int i = 0; i < programmers.Count(); i++)
-            //{
-            //    Console.WriteLine(programmers[i].ToString());
-            //}
-            #endregion
-
-            List<ProjectTeam> teams = loadXML();
-            List<Programmer> programmers = new List<Programmer>()
-            {
-                teams[0].programmers[0], teams[0].programmers[1],
-                teams[1].programmers[0], teams[1].programmers[1]
-            };
-
-            Console.WriteLine("-----------------------------------------------------------------");
-            Console.WriteLine("IT COMPANY - REPORT");
-            Console.WriteLine("-----------------------------------------------------------------");
-            Console.WriteLine("IT Company is actually composed of " + teams.Count() + " teams, and "
-                + programmers.Count() + " programmers.");
-
+            //IT Company data loaded and initialised
+            List<ProjectTeam> teams = loadSystem();
+            //IT Company data updated
+            updateSystem();
+            //IT Company data saved and finally reported
+            reportSystem(teams);
         }
 
-        public static List<ProjectTeam> loadXML()
+        public static List<ProjectTeam> loadSystem()
         {
 
             List<Programmer> programmersFirstTeam = new List<Programmer>();
@@ -170,31 +115,36 @@ namespace Project1_Console_App
                                                     {
                                                         if (item5.FirstChild.HasChildNodes)
                                                         {
-                                                            string activityname = "";
-                                                            int daystart = 0;
-                                                            int dayfinish = 0;
+                                                            string activityName = "";
+                                                            int dayStart = 0;
+                                                            int dayFinish = 0;
+                                                            int workedDays = 0;
                                                             int duration = 0;
 
                                                             foreach (XmlNode item6 in item5)
                                                             {
                                                                 if (item6.FirstChild.ParentNode.Name.Equals("activityname"))
                                                                 {
-                                                                    activityname = item6.InnerText;
+                                                                    activityName = item6.InnerText;
                                                                 }
                                                                 else if (item6.FirstChild.ParentNode.Name.Equals("daystart"))
                                                                 {
-                                                                    daystart = Int32.Parse(item6.FirstChild.InnerText);
+                                                                    dayStart = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
                                                                 else if (item6.FirstChild.ParentNode.Name.Equals("dayfinish"))
                                                                 {
-                                                                    dayfinish = Int32.Parse(item6.FirstChild.InnerText);
+                                                                    dayFinish = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("workeddays"))
+                                                                {
+                                                                    workedDays = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
                                                                 else if (item6.FirstChild.ParentNode.Name.Equals("duration"))
                                                                 {
                                                                     duration = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
                                                             }
-                                                            activity1 = new Activity(activityname, daystart, dayfinish, duration);
+                                                            activity1 = new Activity(activityName, dayStart, dayFinish, workedDays, duration);
                                                         }
                                                     }
                                                 }
@@ -259,6 +209,7 @@ namespace Project1_Console_App
                                                             string activityname = "";
                                                             int daystart = 0;
                                                             int dayfinish = 0;
+                                                            int workeddays = 0;
                                                             int duration = 0;
 
                                                             foreach (XmlNode item6 in item5)
@@ -275,12 +226,16 @@ namespace Project1_Console_App
                                                                 {
                                                                     dayfinish = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
+                                                                else if (item6.FirstChild.ParentNode.Name.Equals("workeddays"))
+                                                                {
+                                                                    workeddays = Int32.Parse(item6.FirstChild.InnerText);
+                                                                }
                                                                 else if (item6.FirstChild.ParentNode.Name.Equals("duration"))
                                                                 {
                                                                     duration = Int32.Parse(item6.FirstChild.InnerText);
                                                                 }
                                                             }
-                                                            activity2 = new Activity(activityname, daystart, dayfinish, duration);
+                                                            activity2 = new Activity(activityname, daystart, dayfinish, workeddays, duration);
                                                         }
                                                     }
                                                 }
@@ -310,13 +265,15 @@ namespace Project1_Console_App
 
         public static void createXML()
         {
-            Activity activity1 = new Activity("Activity 1", 1, 10, 9);
-            Activity activity2 = new Activity("Activity 2", 13, 25, 12);
+            ProjectTeam pjTeam1 = new ProjectTeam("Full", 1);
+            ProjectTeam pjTeam2 = new ProjectTeam("Half", 2);
+            Activity activity1 = new Activity("Activity 1", 1, 10, 3, 9);
+            Activity activity2 = new Activity("Activity 2", 4, 12, 5, 8);
 
-            Programmer p1 = new Programmer("Angel", "Torres", EMPLOYEE_SALARY, activity1);
-            Programmer p2 = new Programmer("Pablo", "Turiel", EMPLOYEE_SALARY, activity1);
-            Programmer p3 = new Programmer("Lucas", "Cuestarriba", EMPLOYEE_SALARY, activity2);
-            Programmer p4 = new Programmer("Julian", "Rajoz", EMPLOYEE_SALARY, activity2);
+            Programmer p1 = new Programmer("Angel", "Torres", pjTeam1.SalaryCalculation(pjTeam1.Type), activity1);
+            Programmer p2 = new Programmer("Pablo", "Turiel", pjTeam1.SalaryCalculation(pjTeam1.Type), activity1);
+            Programmer p3 = new Programmer("Lucas", "Cuestarriba", pjTeam2.SalaryCalculation(pjTeam2.Type), activity2);
+            Programmer p4 = new Programmer("Julian", "Rajoz", pjTeam2.SalaryCalculation(pjTeam2.Type), activity2);
 
             List<Programmer> team1 = new List<Programmer>(){
                 p1,p2
@@ -325,8 +282,8 @@ namespace Project1_Console_App
                 p3,p4
             };
 
-            var pjTeam1 = new ProjectTeam("Full", 1, team1);
-            var pjTeam2 = new ProjectTeam("Half", 2, team2);
+            pjTeam1.programmers = team1;
+            pjTeam2.programmers = team2;
 
 
 
@@ -339,6 +296,8 @@ namespace Project1_Console_App
 
             XmlElement projectTeams = document.CreateElement(string.Empty, "teams", string.Empty);
             document.AppendChild(projectTeams);
+
+            //First team creation
 
             XmlElement projectTeam = document.CreateElement(string.Empty, "team", string.Empty);
             projectTeams.AppendChild(projectTeam);
@@ -390,6 +349,11 @@ namespace Project1_Console_App
             programmerActivity.AppendChild(programmerActivityDayF);
             programmerActivityDayF.AppendChild(textActivityDayF);
 
+            XmlElement programmerActivityWorkedDays = document.CreateElement(string.Empty, "workeddays", string.Empty);
+            XmlText textActivityWorkedDays = document.CreateTextNode(pjTeam1.programmers[0].Activity.WorkedDays.ToString());
+            programmerActivity.AppendChild(programmerActivityWorkedDays);
+            programmerActivityWorkedDays.AppendChild(textActivityWorkedDays);
+
             XmlElement programmerActivityDuration = document.CreateElement(string.Empty, "duration", string.Empty);
             XmlText textActivityDuration = document.CreateTextNode(pjTeam1.programmers[0].Activity.Duration.ToString());
             programmerActivity.AppendChild(programmerActivityDuration);
@@ -433,6 +397,11 @@ namespace Project1_Console_App
             programmerActivity2.AppendChild(programmerActivityDayF2);
             programmerActivityDayF2.AppendChild(textActivityDayF2);
 
+            XmlElement programmerActivityWorkedDays2 = document.CreateElement(string.Empty, "workeddays", string.Empty);
+            XmlText textActivityWorkedDays2 = document.CreateTextNode(pjTeam1.programmers[1].Activity.WorkedDays.ToString());
+            programmerActivity2.AppendChild(programmerActivityWorkedDays2);
+            programmerActivityWorkedDays2.AppendChild(textActivityWorkedDays2);
+
             XmlElement programmerActivityDuration2 = document.CreateElement(string.Empty, "duration", string.Empty);
             XmlText textActivityDuration2 = document.CreateTextNode(pjTeam1.programmers[1].Activity.Duration.ToString());
             programmerActivity2.AppendChild(programmerActivityDuration2);
@@ -442,7 +411,7 @@ namespace Project1_Console_App
             programmers.AppendChild(programmer);
             programmers.AppendChild(programmer2);
 
-            //SECOND TEAM
+            //Second team creation
 
             XmlElement projectTeam2 = document.CreateElement(string.Empty, "team", string.Empty);
             projectTeams.AppendChild(projectTeam2);
@@ -494,6 +463,11 @@ namespace Project1_Console_App
             programmerActivity3.AppendChild(programmerActivityDayF3);
             programmerActivityDayF3.AppendChild(textActivityDayF3);
 
+            XmlElement programmerActivityWorkedDays3 = document.CreateElement(string.Empty, "workeddays", string.Empty);
+            XmlText textActivityWorkedDays3 = document.CreateTextNode(pjTeam2.programmers[0].Activity.WorkedDays.ToString());
+            programmerActivity3.AppendChild(programmerActivityWorkedDays3);
+            programmerActivityWorkedDays3.AppendChild(textActivityWorkedDays3);
+
             XmlElement programmerActivityDuration3 = document.CreateElement(string.Empty, "duration", string.Empty);
             XmlText textActivityDuration3 = document.CreateTextNode(pjTeam2.programmers[0].Activity.Duration.ToString());
             programmerActivity3.AppendChild(programmerActivityDuration3);
@@ -535,6 +509,11 @@ namespace Project1_Console_App
             programmerActivity4.AppendChild(programmerActivityDayF4);
             programmerActivityDayF4.AppendChild(textActivityDayF4);
 
+            XmlElement programmerActivityWorkedDays4 = document.CreateElement(string.Empty, "workeddays", string.Empty);
+            XmlText textActivityWorkedDays4 = document.CreateTextNode(pjTeam2.programmers[1].Activity.WorkedDays.ToString());
+            programmerActivity4.AppendChild(programmerActivityWorkedDays4);
+            programmerActivityWorkedDays4.AppendChild(textActivityWorkedDays4);
+
             XmlElement programmerActivityDuration4 = document.CreateElement(string.Empty, "duration", string.Empty);
             XmlText textActivityDuration4 = document.CreateTextNode(pjTeam2.programmers[1].Activity.Duration.ToString());
             programmerActivity4.AppendChild(programmerActivityDuration4);
@@ -546,7 +525,78 @@ namespace Project1_Console_App
             programmers2.AppendChild(programmer4);
 
 
+            //Document saved
             document.Save("./data.xml");
+        }
+
+        public static void updateSystem()
+        {
+
+            //Open file
+            XmlDocument doc = new XmlDocument();
+            doc.Load(xmlFile);
+
+            //Select activity nodes for updating "duration" of programmers
+            XmlNodeList activities = doc.SelectNodes("//teams/team/programmers/programmer/activity");
+            Console.WriteLine("Increasing the duration of all programmers in charge (+1 day)...");
+
+            //If we have to update "duration", we will also have to update "dayfinish" value
+            foreach (XmlNode activity in activities)
+            {
+                XmlNode duration = activity.SelectSingleNode("duration");
+                int durationUpdated = Int32.Parse(duration.InnerText) + 1;
+                duration.InnerText = durationUpdated.ToString();
+
+                XmlNode dayfinish = activity.SelectSingleNode("dayfinish");
+                int dayfinishUpdated = Int32.Parse(dayfinish.InnerText) + 1;
+                dayfinish.InnerText = dayfinishUpdated.ToString();
+            }
+
+
+            //Document saved
+            doc.Save(xmlFile);
+            Console.WriteLine("Data has been updated and saved.");
+
+        }
+
+        public static void reportSystem(List<ProjectTeam> teams)
+        {
+            List<Programmer> programmers = new List<Programmer>()
+            {
+                teams[0].programmers[0], teams[0].programmers[1],
+                teams[1].programmers[0], teams[1].programmers[1]
+            };
+
+            int remainingDaysT1 = teams[0].programmers[0].Activity.Duration - teams[0].programmers[0].Activity.WorkedDays;
+            int remainingDaysT2 = teams[1].programmers[0].Activity.Duration - teams[1].programmers[0].Activity.WorkedDays;
+
+
+            int daysConsummed = teams[0].programmers[0].Activity.WorkedDays + teams[1].programmers[0].Activity.WorkedDays;
+            int remainingDays = remainingDaysT1 + remainingDaysT2;
+
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("IT COMPANY - REPORT");
+            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("IT Company is actually composed of " + teams.Count() + " teams, and "
+                + programmers.Count() + " programmers.");
+            Console.WriteLine("This month, " + daysConsummed + " days have been" +
+                "consumed by " + programmers.Count + " programmers, and " + remainingDays + " days still in charge.");
+            Console.WriteLine("-----------------------------------------------------------------------------------");
+            Console.WriteLine("Project teams details");
+            Console.WriteLine("-----------------------------------------------------------------");
+
+            foreach (ProjectTeam team in teams)
+            {
+
+                Console.WriteLine("Project team: " + team.TeamNumber);
+
+                foreach (Programmer programmer in team.programmers)
+                { 
+                    Console.WriteLine(programmer.ToString());
+                }
+            }
+
+
         }
     }
 }

@@ -23,12 +23,9 @@ namespace Project1_Console_App
 
         public override string ToString()
         {
-            return LastName + ", " + FirstName + ", " + "salary = " + Salary + "$.";
-        }
-
-        public void salaryCalculation()
-        {
-            
+            return (LastName + ", " + FirstName + " in charge of " + Activity.ActivityName + " from "
+                        + Activity.DayStart + " to " + Activity.DayFinish + " (duration of " + Activity.Duration + "), this month: " +
+                    Activity.WorkedDays + " days (total cost = " + Salary * Activity.WorkedDays + "$)");
         }
     }
 
